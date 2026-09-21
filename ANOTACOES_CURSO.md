@@ -1,13 +1,7 @@
 
 **Cap.1 - Fundamentos de IA e LLMs**
 
-***MODULO 01***
-
-
-***MODULO 02***
-
-
-    ***2-Machine Learning , Deep Learning e IA***
+    ***Módulo 1-Machine Learning , Deep Learning e IA***
         * IA:  
             - são algoritmos que aprendem com os dados que também tem nome.
             - refere-se a sistemas que podem se comportar de forma inteligente e aprender como humanos.
@@ -37,7 +31,7 @@
             - Estratégia: nunca enviar o dado ja treinado para gerar predição.
         
 
-    ***3-Conceitos de redes neurais e como elas se aprendam***
+    ***Módulo 2 - Conceitos de redes neurais e como elas se aprendam***
         
         *Tensores:* 
             - são vetores ou listas em javascript
@@ -50,8 +44,6 @@
             - ONE HOT TAKE: Em Machine Learning, o termo correto é One-Hot Encoding (geralmente traduzido como codificação one-hot), e não "one hot take": Trata-se de uma técnica de normalização fundamental de pré-processamento de dados usada para transformar variáveis categóricas (como cores, estados civis ou categorias de produtos) em um formato numérico que os algoritmos de aprendizado de máquina e redes neurais conseguem processar.
             - Primeira camada de modelo (HIDDEN LAYER/CAMADA OCULTA): Aprende relações entre os dados de entrada através de pesos internos calculados de cada neuronios utilizados.
             - Segunda camada de modelo (OUTPUT LAYER/CAMADA DE SAIDA): Diz a chance de acertar qual é a categoria transformando tudo em probabilidade de acerto.
-
-    ***4-Criando e treinamento minha primeira rede neural***
 
         * Pasta: exemplo-00 - Demonstração Tensorflow e seu exemplo de modelo de treinamento
             - instalar package e o node
@@ -66,19 +58,25 @@
             - Para setar versão node correta no ambiente caso incompatibilidade:  nvm use 22
             - Para renomear como node 22 como padrão: nvm alias default 22
 
-    ***5-Como funciona sistema de recomendação***
+    ***Módulo 3 -Como funciona sistema de recomendação***
 
         * Threading: Todo processamento da rede neural vai acontecer em segundo plano e o processo principal do navegador vai ser
           responsável apenas por atualizar os dados
         
-
         * Pasta: exemplo-01 : Sistema de recomendação Ecommerce
         
             - Copiar o template direto da fonte dsiponibilizado pelo autor
             - executar npm ci para recuperar os pacotes deste ambiente recem recuperado.
             - comando debugger para depurar javascript no tools debuguer navegador
             
+    *** Módulo 4 - Como vencer qualquer jogo
+        * Pasta: exemplo-02: DuckHunter-JS
+            - cd /exemplo-02/DuckHunter-JS
+            - Certificar qual é a versão corrente do node instalado locamente: node -v
+            - Executar npm ci para restaurar as dependencias deste projeto
+            - Para executar o projeto em um navegador: npm start   
 
+            - Habilitar o acelerador gráfico do chrome: chrome://settigs/system 
 
            
             

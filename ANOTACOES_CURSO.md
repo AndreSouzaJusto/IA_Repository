@@ -133,7 +133,9 @@
         * Pasta: exemplo-03: Web AI
             - Instruções para IA Integrada Link:  https://developer.chrome.com/docs/ai/get-started?hl=pt-br
             - 
-
+        
+    *** Modulo 6
+        
 
 
 

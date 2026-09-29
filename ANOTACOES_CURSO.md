@@ -297,7 +297,22 @@
             - IA para cruzar traces, logs e métricas das endpoints para chegar à uma conclusão sólida a fim de encontrar bug de forma mais rápida.
             - OpenTelemetry: Padrão aberto/Universal
             - Ferramenta de Dashboard Prometeus/Grafana: métricas, logs e alertas.
-            - 
+        
+        - Exemplo-6-grafana: Uso de MCP Grafana para Observabilidade
+            - Copiar a pasta alumnus do repositório (scalfolding) e incluir dentro da pasta do atual projeto exemplo-6-grafana
+            - dentro da pasta alumnus/infra, executar o comando para criar um ambiente docker com postgresql, grafana tudo pronto: docker-compose -f docker-compose-infra.yaml up --wait
+            - Apos a criação sucessiva do docker, abrir o arquivo docker-compose-infra.yaml para pegar o URL do servidor da grafana: localhost:3000
+            -Abrir o box no dashboard: HTTP MEtrics OpenTelemetry para visualização de várias metricas que não vai aparecer nenhum dados. (NEcessita instalação de outros modulos abaixo)
+            - Voltar para pasta cd /alumnus/_Alumnus e executar: npm ci para instalar as dependencias
+            - e executar npm start para iniciar a geração de logs automaticos para simulação
+            - Enquanto continua criando os logs, abra o grafana para acompanhar em tmepo real.
+            - Instalar o MCP Grafana Server no mcp.json do vscode local. Ver instruções de instalação no README.MD
+            - Usar o /docs/prompt.md para investigar o motivo de erro que aparece no grafana pelo IA.
+            - Abrir um outro VSCODE WINDOWS em branco, ou seja sem abrir a pasta do codigo fonte para testar o prompt.md (não esquecer de ativar o MCP Grafana na sessão !)
+            - Rodar o prompt de diagnistico
+            - Vai gerar um report de incidente na pasta /docs.
+
+
 
 
 

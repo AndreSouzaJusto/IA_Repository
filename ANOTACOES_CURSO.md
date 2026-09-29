@@ -312,6 +312,75 @@
             - Rodar o prompt de diagnistico
             - Vai gerar um report de incidente na pasta /docs.
 
+     *** Modulo 9
+        - Modelos Abertos
+            - LLM Modelo OpenSource significa sem censura. Consegue baixar open-weights (pesos do modelo) mas não consegue acessar as base de dados usados no modelo de treinamento ou pipeline de treino. 
+            -  LLM Aberto significa downloavel, reproduzível  na maquina local tais como por exemplo ollama (simples), llama3 da meta (mais poderoso), gpt-oss (OpenAI), etc
+            - Vantagens de modelos abertos (Open-weight):
+                -> Custo pode cair ao invês de pagar provedor
+                -> Privacidade e controle
+                -> Customizável : Criação de modelos especialistas sem depender dos outros contextos
+            - Desvantagens:
+                -> Custos invisiveis da infraestrutura para IA: GPU, energia, refrigeração, manutencao, observabilidade, escalonamento, engenharia de distribuição, outros
+                -> Uso restrito comerciais devido clausulas colocadas por fabricante do LLM
+        - Modelos fechados (API):
+            -  Vale a pena pagar quando se trata de projetos empresariais
+            - Pagar ao HUB que distribui o dinheiro aos grupos OPENAI, GOOGLE, CoPilot e outros.
+            - Maior liberdade para escolher aquele que mais adapta ao perfil e orçamento do projeto
+            - Uso de orquestador de modelos
+        - Ollama (Link: https://ollama.com/)
+            - Fork da base da Meta
+            - Otimo para projetos pessoais
+            - Rapido e grátis
+            - Capacidade multimodal: texto, imagem e arquivos que permitem modelo OCR
+            - Oferece um catalogo enorme de modelos de código
+            - Perfeito para provas de conceito, automações locais, scripts de produtividade, prototipos de criação de agentes de AI, estudos de modelos e quantização
+            - Minimo 16GB de RAM e GPU sem gastar 1 centavo em token
+            - Não é ideal para exeução em produção. Ele executa um prompt por vez e usa bastante o processamento da maquina local. Não é feita para vários clientes (Solução: uso do vLLM que iguala ao serviço de ChatGPT)
+        - Caracteristicas de modelos:
+            - Cada modelo oferece bilhoes de parametros (neurônios) que são pesos do modelo ou seja , o que ele realmente aprendeu. Qto mais parametros significa mais capacidade/qualidade
+            - Memoria de curto prazo: tamanho de contexto tipo 4K, 32K, 128K e até 1M.
+            - Context Window: Qtos tokens cabem na conversa de uma vez
+            -  Mixture of Experts (MoE) é uma arquitetura de redes neurais desenvolvida para aumentar dramaticamente a capacidade (número de parâmetros) de um modelo de Inteligência Artificial sem elevar proporcionalmente o custo computacional por inferência.
+            - Em modelos de linguagem tradicionais (conhecidos como Dense Models), todas as partes do modelo são ativadas para processar cada palavra ou token de entrada. No MoE (Mixture of Experts), a abordagem muda para a execução esparsa (Sparse Execution). A arquitetura substitui as camadas tradicionais de Feed-Forward Network (FFN) por dois componentes principais:
+                * Especialistas (Experts): Várias sub-redes independentes (chamadas de "especialistas"), onde cada uma se especializa em processar diferentes tipos de padrões ou contextos (ex.: sintaxe, código, raciocínio lógico, idiomas específicos).
+                * Roteador / Mecanismo de Gating (Router): Uma camada encarregada de analisar o token de entrada e decidir dinamicamente para qual(is) especialista(s) enviar a informação.
+                Mixtral 8x7B (Mistral AI): Possui 8 especialistas de 7 bilhões de parâmetros cada. Embora o total acumulado chegue a ~47 bilhões de parâmetros, ele ativa apenas 2 especialistas por token (~13 bilhões de parâmetros ativos), mantendo uma inferência extremamente rápida.
+                GPT-4 (OpenAI): Utiliza uma arquitetura MoE gigante com múltiplos especialistas internos para entregar alto desempenho em múltiplas tarefas.
+            - Quantização: reduzir o tamanho do modelo trocando a forma como os pesos são representados (ex: 16 bits para 8 bits) para reduzir a precisão numérica usada para armazenar os pesos a fim de ocupar menos memória e rodar em recursos computacionais mais enxutos. Desvantagens: perda de qualidade
+            - MLC-LLM: 
+                * MLC (Machine Learning Compilation) refere-se a um conjunto de técnicas e ecossistemas de software projetados para automatizar e otimizar a conversão de modelos de aprendizado de máquina (Machine Learning e LLMs) em código executável eficiente, ajustado especificamente para diferentes tipos de hardware (GPUs, CPUs, SoCs de smartphones e chips dedicados).
+                * Em vez de depender do envio manual de código para frameworks pesados em tempo de execução, o MLC aborda a implantação de modelos como um problema de compilação de software. O resultado final é compilado em binários leves e ultrarrápidos ajustados para a arquitetura-alvo (CUDA, Metal, Vulkan, OpenCL, WebGPU).
+                * Permite rodar o mesmo modelo de IA em navegadores web (via WebGPU), celulares Android/iOS, computadores pessoais (Mac/Windows/Linux) e servidores de nuvem sem alterar a lógica principal.
+                * Sufixo na nomenclatura significa perfil de quantização usado: Ex: 
+                    -> q4 significa os pesos (weights) do modelo foram armazenados em 4 bits (modelo normal tem 16 bits)
+                    -> f32 significa as ativações(tensores ou calculos intermediários durnte a inferencia) ficam em float32 (32 bits) enquanto o original era de float16
+                    -> _1: um identificador interno da variante/receita de quantização usada pelo MLC (por exemplo, diferenças no algoritmo, calibração, esquema de pacotes,etc)
+                    -> Quando maior precisão numerica, ajuda a preservar estabilidade numerica e qualidade em comparação com quantização de 4K
+                * GPT-OSS-20B roda em cerca de 16GB em nossas maquinas comuns.
+        - Ferramenta: Jan.ai
+            -> OpenSource AI
+            -> Completa como os outros modelos tipo ChatGPT, Claude, Gemini
+            -> Oferece hub de vários modelos inclusive MCPs
+
+        Exemplo-7-ollama:
+            - request.sh: Comandos para instalar modelos ollamas e gerar requisições curl para obter respostas via terminal
+            - 
+        - OpenRouter:
+            - Orquestrador de vários IA
+            - Oferece uma porta unica e padronizada para integrar centenas de modelos de vários provedores diferentes para um unico endpoint com compatilidade 100%
+            - Oferece recurso de fallback automatico, ou seja, se um modelo der problema, ele tenta outro modelo. E alem disso, procura a melhor roteamento baseado por custo/latencia/throwput e outras regras definidas pelo usuario.
+            - Gera cobrança consolidada, você compra 1 assinatura e pode trocar de provedor sem necessidade de comprar mais de 1 assinatura especifica por provedor
+            - Sua Aplicação ganha flexibilidade para inetgrar com vários provedores com apenas uma API através de sua configuração.
+            - OpenRouter oferece modelos gratuitos e pagos
+        exemplo-08-openrouter
+            - sh request.sh -> executa o script padrão bash
+                
+
+
+
+
+
 
 
 

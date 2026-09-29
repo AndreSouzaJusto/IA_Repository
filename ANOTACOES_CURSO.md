@@ -134,16 +134,172 @@
             - Instruções para IA Integrada Link:  https://developer.chrome.com/docs/ai/get-started?hl=pt-br
             - 
         
-    *** Modulo 6
+    *** Modulo 6 - 
+        * Prompts
+            - Dica para montar um prompt eficiente: Precisa detalhar/refinar o maximo possivel para conseguir uma tarefa completa com apenas uma chamada.
+            - Resposta mal formulada significa:
+                - falta de contexto pré alimentada. 
+                - Excesso de ambiguidade ou seja deixar 2 interpretações. Usar Dica: usar o bloco 4
+            - Estrutura de prompt em 10 blocos organizadas para montar um contexto consistente antes de responder pergunta de usuários.
+                - Bloco 1 - Contexto de Tarefas: Papel do persona principal /pauta do assunto
+                - Bloco 2 - Contexto de tom: confiante/cauteloso/excessivo - Impressão de falsidade/inverdades
+                - Bloco 3 - Dados de antecedentes, documentos e imagens: Dados de Entrada / Contexto Técnico (Input Data / Sources): O material base sobre o qual a IA   vai trabalhar (código, texto original, dados JSON, documentos em anexo). Servirão de base de referência antes de responder ao usuário.
+                - Bloco 4 - Descrição detalhada da tarefas e regras: Espécie de contrato operacional.  A instrução direta e sem ambiguidade do que a IA precisa realizar (ex: "Crie uma função para refatorar o código abaixo"). Ajuda a evitar alucinações com respostas consistentes.
+                - Bloco 5 - Exemplos: (Few-Shot Examples / In-Context Learning): Exemplos práticos de entradas e saídas esperadas para guiar o padrão do resultado. Nelas contém os niveis de detalhes, formatos de entradas e saida de respostas
+                - Bloco 6 - Histórico de conversas:  Refinamento histórico de texto para evitar , ao maximo, o envio de todo texto a cada pergunta. (Poupa menos token)  
+                - Bloco 7 - Descrição ou pedido imediato: Serve para dar contexto e ajuda a definir respostas mais precisas/consistentes ao pedido.
+                - Bloco 8 - Passo a Passo: Instruções Detalhadas e Passos (Detailed Steps / Execution Plan): O passo a passo do raciocínio ou processo que a IA deve seguir para executar a tarefa para responder ao usuario. (Como vc responde ao usuario?)
+                - Bloco 9 - Formatação da saída: Formato e Estrutura da Saída (Output Format / Schema): Especificação exata do formato da resposta (ex: "Responda estritamente em formato JSON", "Use tabelas Markdown e 3 tópicos principais").
+                - Bloco 10 - Resposta pre preenchida: Modelos/PAdrões de resposta pre definida. Ex: Formato de JSON com tuplas especificas. Etapa mais importante.
+        * Padrão TOON e JSON para Prompts
+            - LLM usa dados estruturados para processar/integrar serviços.
+            - JSON PROMPT: Formato padrão de JSON PROMPT para LLM
+            - JSON PROMPT ajuda a fornecer especificações mais previsíveis (basedas nas 10 regras acima) para integrar ao código. 
+            - Escalabilidade: Prompts viram "config" , isto é, tratar o promtp como configuração versionável. Ex: definição de rota como area de suporte ou de financeira, etc. Ajuda até gerar prompts dinâmico de forma automatica. 
+            - JSON Pura pode gasta mais tokens pois o prompt pode crescer devido novas regras, entradas, saidas, formatos recentes,etc.
+            - JSON ajuda a reduzir o retrabalho ("responde de novo, agora no formato certo"), reduz mensagens de correção ("não era isso, eu quis tal coisa"), e evita respostas longas/erradas que queimam tokens. Ela ajuda a economizar tokens indiretamente, dividindo idas e voltas
+            - Regras para estruturação de JSON PROMPT:
+                1- Meta:Nome/Versão do prompt, Idioma, objetivo
+                2- Role: Papel do interlocutor (ex: especialista, revisor, tutor)
+                3- Context: Dados que o modelo precisa saber
+                4- Task: o que exatamente fazer
+                5- Constraint: limites e regras, (não inventar, não extrapolar, etc)
+                6- Output: formato de saida e validação
+            - Principais travas do JSON:
+                - do_not_invent:true
+                - if_missing_data:say_you_dont_know
+                - cite_source_fields:[context.source]
+                - allowed_assumptions:[]
+                - constraints:{ uncertainty_policy:"Se não estiver certeza, diga 'não tenho dados suficientes' e peça o campo faltante"} 
+            - Uso da ferramenta de JSON SCHEMA ou Zodio para validar/forçar o modelo a pensar antes.
+            - JSON PROMPT ajuda a definir o mais proximo deterministico e da reutilização dos prompts gerando saídas mais previsíveis.
+            - Evitar criar JSON PROMPTS poéticos isto é, inflado e cheio de ruído. (Menos é mais)
+            - TOON: Token Oriented Object Notation
+                - Nova onda para gastar menos token
+                - Modelo mental do JSON que representa objects, array e valores , só que com menos pontuação.(aspas, colchetes, virgulas,etc). Foco: token enxuto e eficiente com estilo mais compacto 
+                - Ideal para construir "JSON BEM PENSADO" com campos curtos, representação tabular com cols/rows, remover redundância, evitar texto desnecessário, etc.
+
+    *** Modulo 7 - 
+        Historia Cursor/VSCode/Outros IDE
+            - VS é a base (fork) de Cursor
+            - Lema importante: Usar IA para acelerar , mas trate a saída como não confiável
+            - Confiar e conferir sempre: 
+                - Revisão
+                - Testes
+                - Politicas
+                - Escopo
+                - Segurança
+                - Observabilidade  
+        Agentes de IA: 
+            - É o motor/orquestrador de decisão de IA. Um agente de IA é um sistema computacional baseado em Inteligência Artificial que não apenas gera textos ou respostas passivas, mas possui autonomia para atuar em direção a um objetivo determinado, percebendo o ambiente, planejando ações e utilizando ferramentas para executar tarefas complexas. Enquanto um modelo de linguagem tradicional (LLM) atua de forma imediata (recebe uma entrada e devolve uma saída única), o agente funciona como um "orquestrador": ele analisa o problema, decide quais passos intermediários são necessários e executa cada um até alcançar o resultado esperado.
+            - Agente de IA resolve problemas criando um ciclo controlado, isto é:
+                - Objetivo ( o que o usuário quer), plano (como chegar lá), ações (rodar ferramentas, buscar mais contexto), Osbservações(ver resultados/logs/testes/erros), iteração (corrigir/repetir) e entrega final (com evidências e relatório final)
+            - Agente Não precisa estar no editor
+            - Para desenvolver agentes AI eficientes, precisa:
+                1) Planejamento: Quebrar em etapas pequenas ou seja, cria um plano com passos aplicáveis
+                    - Define o que é "pronto" (critérios de aceite)
+                    - Escolhe a ordem de execução
+                2) Seleção de ferramentas: Qual action resolve isso ? Ex: 
+                    Preciso saber a estrutura de repositorio ? - ferramenta de busca de arquivos no diretório local
+                    Preciso validar se compila ? - Ferramenta de terminal
+                    Preciso entender API atualizada ? - Ferramenta de documentação
+                    Preciso garantir padrão ? - Ferramenta para rodar script de linter e formatação
+                    Preciso responder com base em dados ? - Ferramenta de integração com banco de dados
+                3) Observação e iteração: Feedback é a verdade. Observa os testes para ser se está OK e coerente com a funcionalidade projetada. Ele aprende na marra: observa, age e tenta corrigir caso ocorra algum problema.
+                4) Agentes são papéis: ideal um papel/especialidade/missão por agente
+                    - Planner: Só planeja, não edita nada
+                    - Implementer: edita código e roda testes
+                    - Reviewer: lê diff e aponta riscos
+                    - QA: valida contrato e fluxo ponta a ponta
+                    - Dcos agent: escreve readme/changelog
+                    - Ops agent: consulta observabilidade e sugere mitigação.
+                - Exemplo: Agente Spec ideal (para dev) no github
+                    - Contexto: onde isso roda, stack, constraints
+                    - Requisitos: o que deve existir
+                    - Não requisitos: o que não faz parte (evita feature creep)
+                    - Critérios de aceite: como validar que terminou
+                    - Contrato: shape de API, formatos de resposta
+                    - Plano de teste: como verificar
+                Fluxo de Processos de Agentes:
+                    1) Primeiro a especificação (define contrato APi,interface de usuário minima,define validação)
+                    2) Agente com papéis: Backend implementa API, FrontEnd  implementa UI e QA valida e gera checklist
+                    3) Intgração: Rodar testes e validar
+
+    *** Modulo 8
         
+        - O que são MCP (Model Context Protocol)?
+            - Anthropic introduziu MCP em 2024
+            - MCP é um protocolo para conectar LLM ao mundo real
+            - MCP Server são servidores de MCP que oferecem integrações externas (pacotes prontos para plug-in)
+            - Existem varios tipos de pacotes MCP prontos: acesso banco de dados, gerador de emails (RESEND MCP Integration), etc
+        - Um servidor de MCP expõe uma lsita de 3 itens importantes:
+            - Lista de ferramantas (Tools): as ações que o modelo pode disparar. (Similarmente na API temos o endpoint) 
+            - Lista de recursos (resources): recursos existentes 
+            - Lista de prompts: Templates de prompts pre definidas que usam 1 ou mais ações/tools
+        - LLM não vê servidores de MCP e sim uma lista de ferramentas, nomes, descrições , esquema de parametros que o cliente host montou a partir dos servidores de MCP
+        - Exemplos: Mapa mental de ações/tools
+            - MCP "filesystem"
+                * tool:read_file(path) -> Ler um arquivo
+                * tool: list_dir(path) -> Listar um diretório   
+            - MCP "git"
+                * tool: diff() -> compara branchs
+                * tool: status() -> verificar a situação do branch 
+            - MCP "db"
+                * tool: run_query(sql) -> executa uma query
+        - Como LLM escolhe/executa a MCP?
+            - Não existe IF/ELSE dentro do modelo e sim um comportamento aprendido
+            - Decide pelo nome e descrição da Tool da MCP
+            - MCP deixa de ser só texto e vira um operador de ferramentas padronizado               
 
+        * Pasta: exemplo-04-playwright Teste via Terminal
+            - Instalar a extensão Playwright Test for VS Code
+            - Instalar MCP Playwright : @mcp Playwright
+            - Consultar no Built In: MCP Playwight instalado do VSCODE e suas ferramentas: Clicar Configuration Tools situado no chat do IA
+            - Executar o prompt generate-tests.md e generate-test.promtp.md para disparar o teste usando MCP Playwright
+            - Opção: execução manual 
+                >npm test (EXecuta o plano de teste)
+                >npm playwright show-report  (Visualiza o resultado)
 
+        * Pasta exemplo-04-playwrightMCP: Teste via MCP
+            - Instalar MPC Gihub: @mcp github
+            - Através do Built-in: selecione o MCP Github que vai abrir mcp.json
+            - Colar configuração do MCP PlayWrigth no mcp.json. Link: https://github.com/microsoft/playwright-mcp/tree/main
+            - Instalar a extensão do chrome web store no mcp playright: https://github.com/microsoft/playwright/tree/main/packages/extension#readme. "--extension" no mcp.json
+            - Instalar extensão do chrome: Playwright MCP Chrome Extension e executar para obter o token Id : 
 
+            - Ativar o modo desenvolvedor no Chome via chrome://extensions/
+            - Executar o server MCP Playwright para testar (OBS: Se estiver outro MCP Playright ativado, desative-o)
 
-
-
-
-
-           
+        * Contexto Seven (7): Link: https://context7.com/
+            - O Context7 é um servidor MCP (Model Context Protocol) desenvolvido pela Upstash que fornece documentação atualizada e específica por versão de mais de 2.000 bibliotecas diretamente para assistentes de IA e editores de código. 
+            - O Context7 busca exemplos de código e documentação atualizados diretamente no contexto do seu LLM. Sem precisar alternar entre abas, sem APIs inexistentes e sem geração de código desatualizado.
+            - Vantagens: Mantem o estado-da-arte de contexto ou seja sempre atualizado após o tempo.
+            - Sem context7: Você cola blocos enormes de docs no prompt, manda links e pede: use isso e reexplica o setup inteiro a cada tentativa. Assim gasta mais tokens e custo.
+            - Com context7: VOcê apenas manda a intenção (Crie um CRUD em Node.js, integre o Prisma+Postgresql e use context7), o agente chama context7 , traz trechos curtos e precisos e só gera o código com base na doc atual. Assim resulta menos tokens no prompt inicial e maior economia atavés de menos tentativas e correções. Código fica mais alinhado na versão correta.
             
+            * Exemplo de projeto: Uso de next.js com context7 https://context7.com/vercel/next.js
 
+
+        * pasta 5 - Context7:
+            - Criar uma API KEY do context7 (grátis): ctx7sk-1e54df5a-36c9-4f61-966c-b4e02e010c8a
+            - Instalar o MCP do Context7 no VSCode e testar se OK
+            - Copia/colar o prompt.md no chat e ainda complemente-o: Criar o projeto na mesma pasta do prompt.md
+            - Esperar o MCP rodar/criar a pasta até o final
+            - Apos terminar de montar o ambiente, é necessário configurar o OAuth Apps na sua github para permitir conexão conforme instruções no prompt: Abrir o github - https://github.com/settings/developers 
+            - Criar um novo OAuth APP: Demo pos conforme instruções no README.MD na pasta do projeto. Apos criar o OAuth, copie o Client ID e Client SECRET gerado pelo github e cole no arquivo .env 
+            - cd \repositorio_justo\Cap1\exemplo-05-context
+            - executar: 
+                npx @better-auth/cli migrate
+                npm run dev
+
+        * Observabilidade:
+            - Telemetria como fonte de dados
+            - IA para cruzar traces, logs e métricas das endpoints para chegar à uma conclusão sólida a fim de encontrar bug de forma mais rápida.
+            - OpenTelemetry: Padrão aberto/Universal
+            - Ferramenta de Dashboard Prometeus/Grafana: métricas, logs e alertas.
+            - 
+
+
+
+
+                

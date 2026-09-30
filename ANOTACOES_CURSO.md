@@ -375,7 +375,78 @@
             - OpenRouter oferece modelos gratuitos e pagos
         exemplo-08-openrouter
             - sh request.sh -> executa o script padrão bash
-                
+
+    *** Modulo 10 - O que é RAG ?
+        - RAG(Retrieval Augmented Generation )
+            -> É um padrão de busca de informações relevante, documentos, PDFs, banco de dados,etc e injeta esses trechos no contexto
+            -> Memoria paramétrica (o que o modelo sabe nos parametros)
+            -> Memoria não-parametrica (um indice externo pesquisavel tipicamente um indice vetorial)
+            -> RAG faz a LLM responder com fatos atualizados, que ajudam a reduzir alucinações e aumentando precisão.
+            -> RAG coloca os fatos certos no contexto antes da operação
+        - Transformers:
+            -> Dado um contexto (seu prompt + historico + trechos de ferramentas), o modelo prediz o proximo token
+            -> Embedding é transformar um texto em um vetor numérico (um array de floats) onde textos com significados parecidos viram vetores próximos que são processados em duas fases:
+                -> indexação: Todos os contextos em pdf, texto,etc são quebrados em chunk coerentes
+                -> consulta: através de chat, você faz uma pergunta baseada em contexto e ela faz a busca de respostas próximas/similares à pergunta e retorna os proximos tokens.
+            -> Embeddings permite buscar esses fatos por similaridade de sentido (não só palavra igual) e um banco de dados para recuperar (e até deduplicar conhecimento). Ela não é o "keyword".   
+        -> Com o RAG: você injeta os trechos certos no momento da pergunta, sem precisar ensinar o modelo para sempre.
+            -> Ele transforma pergunta em embeddings
+            -> Busca por similaridade de cada fonte
+            -> Pega os top-k pedaços parecidos/relevantes
+            -> Pode aplicar filtros e rerankings
+            -> Injeta esses pedaços no prompt fazendo o LLM respondendo contextos baseada em evidência, por exemplo recuperando pedaços do runbook (pool de conexões)
+        Diferença entre MPC e RAG: Confusão
+            -> Dois acabam aumentando o contexto que a LLM enxerga porém cada um deles executam e resolvem problemas bem diferentes.
+            -> RAG: busca a resposta antes de responder com foco de trazer conhecimento certo, atualizado ou privado.
+            -> MCP: Protocolo de integração que expõe capacidade para o modelo, ela padroniza as ações das ferramentas externas. As ações que podem ser executadas (rodar testes, buscar docs, consultar Grafana, integrar recursos). Ela pluga capacidades e fontes ao agente/editor.
+            -> RAG: Precisa de um canal para buscar conteudo
+            -> RAG é um comportamento enquanto MCP é o caminho
+            -> RAG usa o MCP como infraestrutura
+            -> Quando o MCP não tem nada a ver com RAG ? Quando o MCP executa ações que não são recuperação de conhecimento. Ex: Rodar testes, abrir um pull request, criar um relatório de performance, fazer um deploy de um serviço. Uso de MCP como "controle remoto" de automação/agente
+        Fine-Tuning:
+            -> Quando você pega um modelo ja treinado e faz um treinamento adicional nele, usando exemplos do seu domínio, para ajustar os pesos do modelo sem precisar repetir as instruções toda vez.
+            -> Fine-Tuning não é dar/mexer no cerebro. Ele é treinado com dataset generico, reconhece padrões visuais parecidos, formas e texturas, cores/contrastes, etc.
+            -> Ele retreina a ultima camada da cabeça do classificador onde fica as classes finais e as vezes descongela só as ultimas camads do backbone para refinar detalhes e gera um novo modelo baseado da técnica de transfer learning: você não joga fora o que o modelo aprendeu; você reaproveita e só ajusta para uma tarefa mais especifica.
+            -> Fine-Tuning não é dar contexto e sim está dando memória de curto prazo para aquela execução ou seja, ele busca trechos mais relevantes numa base
+        
+        Examplo-09-embedding-neo4:
+            -> Busca por similaridade usando banco de vetores Neo4j.
+            -> Ler o contexto da aula, quebrar o texto , grar embeddings e armazenar tudo no banco de vetores Neo4j para ser consultado posteriormente através de perguntas.
+            -> Busca de similaridade - estratégia: Transforma cada pedaço do texto em um vetor (embedding), textos com significado parecido viram vetores próximos, ai você pergunta algo e o banco te devolve os top-k trechos mais proximos.
+            -> Embedding é um resumo numérico do significado do texto. Embedding só captura as ideias parecidas através de relações (semantica) e o banco só precisa fazer a matemática e responder assim: "Esses pedaços aqui são mais proximos do que você perguntou" 
+            -> Neo4J: é um database vector ou seja banco de dados baseados em grafos onde você guarda seus chunks (pedaços) como nós. Ela armazena embeddings como propriedades e cria um indice vetorial pra permitir busca por similaridade trazendo score e os topos resultados.
+            -> TRansformer.js: biblioteca de javascript que processa modelos de AI localmente sem sequer precisar o ollama e torrar tokens. Ela gera embeddings localmente e armazena no banco de vetores (neo4j).
+            -> Este exemplo mostra:
+                * roda em Node.js
+                * não precisa de chave
+                * não precisa de Docker
+                * não depende de cloud
+                * você consegue reproduzir tudo do zero localmente na sua maquina.
+            -> configurar .env 
+            -> executar npm ci para instalar todas as dependencias.
+            -> executar caso ocorra problema com docker:
+                sudo usermod -aG docker "$USER"
+                newgrp docker 
+                docker ps
+            -> npm run infra:up -> para criar/subir um ambiente docker com container neo4j com sucesso.
+        
+            -> Testar neo4j: http://localhost:7474/browser/
+            -> npm run dev para executar o ambiente
+            
+            -> npm run infra:down -> para desligar um ambiente docker com container neo4j aberto.
+
+        Exemplo-10-embedding-neo4j-rag: 
+            -> realizar a copia da pasta anterior com subpasta neo4j, import e nodes_modules deletado
+            -> npm ci 
+            -> npm run infra:up -> para criar/subir um ambiente docker com container neo4j com sucesso.
+            -> npm run dev
+            -> Testar neo4j: http://localhost:7474/browser/ com username: neo4j e password: password. Selecionar node labels: chunk 
+            -> Criar KEY API no OpenRouter para teste 
+
+
+
+
+
 
 
 

@@ -2,3 +2,6 @@ node_modules/
 .env
 .DS_Store
 *.log
+**/neo4j/data/
+**/neo4j/logs/
+**/neo4j/plugins/
